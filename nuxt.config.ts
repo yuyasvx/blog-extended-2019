@@ -2,6 +2,8 @@ import NuxtConfiguration from '@nuxt/config'
 import sass from 'sass'
 import fibers from 'fibers'
 import pkg from './package.json'
+import publicJson from './blog/public/index.json'
+import postsJson from './blog/public/post/index.json'
 
 const config: NuxtConfiguration = {
   mode: 'universal',
@@ -40,8 +42,10 @@ const config: NuxtConfiguration = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    '@nuxtjs/proxy'
   ],
+  proxy: ['http://localhost:1313/**/*.json', 'http://localhost:1313/*.json'],
   /*
    ** Axios module configuration
    */
@@ -76,6 +80,32 @@ const config: NuxtConfiguration = {
         implementation: sass,
         fiber: fibers
       }
+    }
+  },
+  generate: {
+    dir: 'generated',
+    /*
+     ** nuxt generate時、動的ルーティング時のコンテンツ生成対象
+     ** @see https://ja.nuxtjs.org/api/configuration-generate#routes
+     */
+    routes() {
+      const parsedResult: string[] = []
+      publicJson.siteprops.taxonomies
+        .filter(element => element.key === 'categories')[0]
+        .terms.forEach(term => {
+          parsedResult.push(`/categories/${term.link}/`)
+        })
+
+      publicJson.siteprops.taxonomies
+        .filter(element => element.key === 'tags')[0]
+        .terms.forEach(term => {
+          parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
+        })
+
+      postsJson.data.forEach(post => {
+        parsedResult.push(`${post.permalink}`)
+      })
+      return parsedResult
     }
   }
 }

@@ -12,10 +12,14 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "test": "jest",
-    "storybook": "start-storybook -p 9001"
+    "storybook": "start-storybook -p 9001",
+    "hugo:preview": "hugo -s ./blog --buildDrafts --buildFuture && hugo server -s ./blog --buildDrafts --buildFuture",
+    "hugo:publish": "hugo -s ./blog",
+    "publishblog": "rm -rf ./blog/public && npm run hugo:publish && NUXT_ENV_ISBUILDING=true nuxt generate && cp -r ./generated/* ./blog/public && rm -rf ./generated"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/proxy": "^1.3.3",
     "@nuxtjs/pwa": "^2.6.0",
     "cross-env": "^5.2.0",
     "dayjs": "^1.8.14",
