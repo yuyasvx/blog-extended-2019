@@ -11,7 +11,7 @@
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "test": "jest",
+    "test:unit": "jest",
     "storybook": "start-storybook -p 9001",
     "hugo:preview": "hugo -s ./blog --buildDrafts --buildFuture && hugo server -s ./blog --buildDrafts --buildFuture",
     "hugo:publish": "hugo -s ./blog",
