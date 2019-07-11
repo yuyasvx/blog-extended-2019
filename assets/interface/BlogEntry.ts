@@ -1,4 +1,4 @@
-import Day, { Dayjs } from 'DayJs'
+import Day, { Dayjs } from 'dayjs'
 import { CategoryInfo, TagInfo } from './EntryInfo'
 import BlogEntryNeighbor from './BlogEntryNeighbor'
 

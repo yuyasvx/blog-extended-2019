@@ -1,5 +1,5 @@
 import { Either, left, right } from 'fp-ts/lib/Either'
-import Day from 'DayJs'
+import Day from 'dayjs'
 import BlogEntry, * as blogEntry from '../interface/BlogEntry'
 import SiteProps from '../interface/SiteProps'
 
