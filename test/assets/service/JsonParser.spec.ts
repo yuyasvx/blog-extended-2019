@@ -2,6 +2,7 @@ import { pipe } from 'fp-ts/lib/pipeable'
 import * as either from 'fp-ts/lib/Either'
 import { toBlogEntry, parseToBlogEntry } from '@/assets/service/JsonParser'
 // import * as blogEntry from '@/assets/interface/BlogEntry'
+import '@/assets/auto-config/dayjs'
 
 describe('toBlogInfo', () => {
   it('正常なデータをパースする', () => {
@@ -24,7 +25,7 @@ describe('toBlogInfo', () => {
 
     const result = toBlogEntry(data)
     expect(result.title).toBe('test data')
-    expect(result.date.format()).toBe('2017-03-05T21:10:54+09:00')
+    expect(result.date.locale('ja').format()).toBe('2017-03-05T21:10:54+09:00')
     // pipe(
     //   toBlogEntry(data),
     //   either.fold(
