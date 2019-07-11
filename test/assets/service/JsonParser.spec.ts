@@ -25,7 +25,7 @@ describe('toBlogInfo', () => {
 
     const result = toBlogEntry(data)
     expect(result.title).toBe('test data')
-    expect(result.date.format()).toBe('2017-03-05T21:10:54+09:00')
+    expect(result.date.locale('ja').format()).toBe('2017-03-05T21:10:54+09:00')
     // pipe(
     //   toBlogEntry(data),
     //   either.fold(
