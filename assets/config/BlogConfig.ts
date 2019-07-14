@@ -1,14 +1,14 @@
 export interface BlogConfig {
-  siteName: string
-  siteShortName: string
-  siteBaseUrl: string
-  baseJsonPath: string
+  readonly siteName: string
+  readonly siteShortName: string
+  readonly siteBaseUrl: string
+  readonly baseJsonPath: string
 }
 
 export const blogConfig: BlogConfig = {
   siteName: 'Blog Extended',
   siteShortName: 'Blog Extended',
-  siteBaseUrl: 'https://blog.yuyasvx.me',
+  siteBaseUrl: process.env.NODE_ENV === 'producution' ? 'https://blog.yuyasvx.me' : 'http://localhost:3000',
   baseJsonPath: '~/blog/public'
 }
 
@@ -19,7 +19,10 @@ export const categoryDictionary = {
   text: '雑記'
 }
 
+export const isBuilding = !!process.env.NUXT_ENV_ISBUILDING
+
 export default {
   blogConfig,
-  categoryDictionary
+  categoryDictionary,
+  isBuilding
 }

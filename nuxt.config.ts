@@ -3,7 +3,8 @@ import sass from 'sass'
 import fibers from 'fibers'
 import pkg from './package.json'
 import publicJson from './blog/public/index.json'
-import postsJson from './blog/public/post/index.json'
+// import postsJson from './blog/public/post/index.json'
+import NormalJson from './assets/interface/NormalJson'
 
 const config: NuxtConfiguration = {
   mode: 'universal',
@@ -66,6 +67,7 @@ const config: NuxtConfiguration = {
         if (config.module == null) {
           return
         }
+        config.devtool = 'inline-cheap-module-source-map'
         config.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -90,21 +92,24 @@ const config: NuxtConfiguration = {
      */
     routes() {
       const parsedResult: string[] = []
-      publicJson.siteprops.taxonomies
-        .filter(element => element.key === 'categories')[0]
-        .terms.forEach(term => {
-          parsedResult.push(`/categories/${term.link}/`)
-        })
+      const publicData = publicJson as NormalJson
+      if (publicData.siteprops != null) {
+        publicData.siteprops.taxonomies
+          .filter(element => element.key === 'categories')[0]
+          .terms.forEach(term => {
+            parsedResult.push(`/categories/${term.link}/`)
+          })
 
-      publicJson.siteprops.taxonomies
-        .filter(element => element.key === 'tags')[0]
-        .terms.forEach(term => {
-          parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
-        })
-
-      postsJson.data.forEach(post => {
-        parsedResult.push(`${post.permalink}`)
-      })
+        publicData.siteprops.taxonomies
+          .filter(element => element.key === 'tags')[0]
+          .terms.forEach(term => {
+            parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
+          })
+      }
+      // TODO どうにかする
+      // postsJson.data.forEach(post => {
+      //   parsedResult.push(`${post.permalink}`)
+      // })
       return parsedResult
     }
   }

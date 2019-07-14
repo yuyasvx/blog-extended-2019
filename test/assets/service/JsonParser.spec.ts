@@ -1,9 +1,9 @@
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as either from 'fp-ts/lib/Either'
-import { toBlogEntry, parseToBlogEntry } from '@/assets/service/JsonParser'
+import { toBlogEntry, parseJsonObjectE } from '@/assets/service/JsonParser'
 // import * as blogEntry from '@/assets/interface/BlogEntry'
 
-describe('toBlogInfo', () => {
+describe('toBlogEntry', () => {
   it('正常なデータをパースする', () => {
     const data = {
       title: 'test data',
@@ -26,19 +26,6 @@ describe('toBlogInfo', () => {
     expect(result.title).toBe('test data')
     expect(result.date.isValid()).toBe(true)
     expect(result.date.toISOString()).toBe('2017-03-05T12:10:54.000Z')
-    // pipe(
-    //   toBlogEntry(data),
-    //   either.fold(
-    //     err => {
-    //       throw err
-    //     },
-    //     val => {
-    //       expect(val.title).toBe('test data')
-    //       expect(val.date.format()).toBe('2017-03-05T21:10:54+09:00')
-    //       done()
-    //     }
-    //   )
-    // )
   })
 
   it('日付データパース失敗', () => {
@@ -66,19 +53,6 @@ describe('toBlogInfo', () => {
       return
     }
     throw new Error('test failed')
-
-    // pipe(
-    //   toBlogEntry(data),
-    //   either.fold(
-    //     err => {
-    //       expect(err instanceof Error).toBe(true)
-    //       done()
-    //     },
-    //     val => {
-    //       throw new Error('test has failed!')
-    //     }
-    //   )
-    // )
   })
 
   it('異常なデータは失敗', () => {
@@ -93,45 +67,20 @@ describe('toBlogInfo', () => {
       return
     }
     throw new Error('test failed')
-    // pipe(
-    //   toBlogEntry(data),
-    //   either.fold(
-    //     err => {
-    //       expect(err instanceof Error).toBe(true)
-    //       done()
-    //     },
-    //     () => {
-    //       throw new Error('test has failed!')
-    //     }
-    //   )
-    // )
   })
 
   it('オブジェクト以外は受け入れない', () => {
-    // const check = (err: Error): void => {
-    //   expect(err instanceof Error).toBe(true)
-    //   done()
-    // }
-    // const abort = (): void => {
-    //   throw new Error('test has failed!')
-    // }
-    // pipe(
-    //   toBlogEntry([]),
-    //   either.fold(check, abort)
-    // )
-    // pipe(
-    //   toBlogEntry(123),
-    //   either.fold(check, abort)
-    // )
-    // pipe(
-    //   toBlogEntry(''),
-    //   either.fold(check, abort)
-    // )
+    const check = (err: unknown): void => {
+      expect(err instanceof Error).toBe(true)
+    }
+    pipe(either.tryCatch(() => toBlogEntry([]), check))
+    pipe(either.tryCatch(() => toBlogEntry(123), check))
+    pipe(either.tryCatch(() => toBlogEntry(''), check))
   })
 })
 
 describe('parseToBlogInfo', () => {
-  it('正常なデータをパースする', done => {
+  it('正常なデータをパースする', () => {
     const jsonData = {
       data: [
         {
@@ -171,7 +120,7 @@ describe('parseToBlogInfo', () => {
     }
 
     pipe(
-      parseToBlogEntry(jsonData),
+      parseJsonObjectE(jsonData),
       either.fold(
         err => {
           throw err
@@ -181,7 +130,35 @@ describe('parseToBlogInfo', () => {
           data.forEach((d, i) => {
             expect(d.title).toBe(jsonData.data[i].title)
           })
-          done()
+        }
+      )
+    )
+  })
+
+  it('json.dataが配列ではなく単一のデータ', () => {
+    const jsonData = {
+      data: {
+        title: 'test title 1',
+        subtitle: null,
+        date: '2019-03-16 00:16:03 +0900 JST',
+        categories: [{ name: 'Development', link: 'development' }],
+        tags: [{ name: 'Docker', link: 'docker' }, { name: '雑記', link: '%E9%9B%91%E8%A8%98' }],
+        jsonlink: 'https://blog.yuyasvx.me/post/2019/03/hello-docker/index.json',
+        permalink: '/post/2019/03/hello-docker/',
+        hasCoverImage: false
+      }
+    }
+
+    pipe(
+      parseJsonObjectE(jsonData),
+      either.fold(
+        err => {
+          throw err
+        },
+        data => {
+          const toString = Object.prototype.toString
+          expect(toString.call(data[0])).toBe('[object Object]')
+          expect(data[0].title).toBe('test title 1')
         }
       )
     )

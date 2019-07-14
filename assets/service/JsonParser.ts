@@ -1,12 +1,7 @@
-import { Either, left, right } from 'fp-ts/lib/Either'
+import { Either, tryCatch as tryCatchE } from 'fp-ts/lib/Either'
 import Day from 'dayjs'
 import BlogEntry, * as blogEntry from '../interface/BlogEntry'
-import SiteProps from '../interface/SiteProps'
-
-interface NormalJson {
-  data: unknown[]
-  siteprops?: SiteProps
-}
+import NormalJson from '../interface/NormalJson'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isNormalJson = (jsonLike: any): jsonLike is NormalJson => {
@@ -20,21 +15,14 @@ const isNormalJson = (jsonLike: any): jsonLike is NormalJson => {
   return true
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// const isPartialBlogEntry = (value: any): value is Partial<BlogEntry> => {
-//   const entry: BlogEntry = blogEntry.emptyValue()
-//   for (const key of Object.keys(value)) {
-//     if (entry[key] === undefined) {
-//       return false
-//     }
-//     console.log(value[key])
-//   }
-//   return true
-// }
-
+/**
+ * 欠落のある場合は空値で無理やり補完してBlogEntryを作成する
+ * @param item
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const toBlogEntry = (item: any): BlogEntry => {
-  if (item.toString() !== '[object Object]') {
+  const toString = Object.prototype.toString
+  if (toString.call(item) !== '[object Object]') {
     throw new Error('オブジェクトではない')
   }
   const unsafeItem = item as BlogEntry
@@ -60,19 +48,38 @@ export const toBlogEntry = (item: any): BlogEntry => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const parseToBlogEntry = (json: any): Either<Error, Partial<BlogEntry>[]> => {
+export const toBlogEntryE = (item: any): Either<Error, BlogEntry> => {
+  return tryCatchE(() => toBlogEntry(item), err => err as Error)
+}
+
+/**
+ * 型チェックの無いjsonファイルを解析してBlogEntry型にする。
+ * 一部しかデータがない場合（本文等の項目が存在しない）でも特に何もしない
+ * @param json 読み込んだJSONオブジェクト
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const parseJsonObject = (json: any): Partial<BlogEntry>[] => {
   if (!isNormalJson(json)) {
-    left(new Error('parse failed'))
+    throw new Error('parse failed')
   }
   const jsonData: NormalJson = json
-  const parsedBlogEntries: Partial<BlogEntry>[] = []
+  let parsedBlogEntries: Partial<BlogEntry>[] = []
 
-  try {
-    jsonData.data.forEach(u => {
-      parsedBlogEntries.push(u as Partial<BlogEntry>)
-    })
-  } catch (err) {
-    return left(err)
+  const toString = Object.prototype.toString
+  if (toString.call(json.data) === '[object Array]') {
+    parsedBlogEntries = jsonData.data.map(u => u as Partial<BlogEntry>)
+    // TODO dateだけ型がstringのままになっている
+  } else {
+    parsedBlogEntries.push(jsonData.data as Partial<BlogEntry>)
   }
-  return right(parsedBlogEntries)
+  return parsedBlogEntries
+}
+
+/**
+ * parseJsonObjectのEither版
+ * @see parseJsonObject
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const parseJsonObjectE = (json: any): Either<Error, Partial<BlogEntry>[]> => {
+  return tryCatchE(() => parseJsonObject(json), err => err as Error)
 }
