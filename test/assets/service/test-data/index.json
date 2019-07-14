@@ -1,0 +1,102 @@
+{
+  "data": [
+    {
+      "title": "test entry 1",
+      "subtitle": null,
+      "date": "2019-03-16 00:16:03 +0900 JST",
+      "categories": [
+        {
+          "name": "Category Name",
+          "link": "category-link"
+        }
+      ],
+      "tags": [
+        {
+          "name": "tag1",
+          "link": "tag1"
+        },
+        {
+          "name": "tag2",
+          "link": "tag2"
+        }
+      ],
+      "jsonlink": "https://blog.yuyasvx.me/post/test-post/index.json",
+      "permalink": "/post/test-post/",
+      "hasCoverImage": false
+    }
+  ],
+  "siteprops": {
+    "taxonomies": [
+      {
+        "key": "categories",
+        "terms": [
+          {
+            "name": "development",
+            "link": "development",
+            "count": 7
+          },
+          {
+            "name": "information",
+            "link": "information",
+            "count": 2
+          },
+          {
+            "name": "misc",
+            "link": "misc",
+            "count": 1
+          },
+          {
+            "name": "tech",
+            "link": "tech",
+            "count": 2
+          },
+          {
+            "name": "text",
+            "link": "text",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "key": "month",
+        "terms": [
+          {
+            "name": "2019-02",
+            "link": "2019-02",
+            "count": 2
+          },
+          {
+            "name": "2019-03",
+            "link": "2019-03",
+            "count": 5
+          },
+          {
+            "name": "yyyy/mm",
+            "link": "yyyy/mm",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "key": "series",
+        "terms": [
+          {
+            "name": "collaboration-hugo-and-nuxt",
+            "link": "collaboration-hugo-and-nuxt",
+            "count": 5
+          }
+        ]
+      },
+      {
+        "key": "tags",
+        "terms": [
+          {
+            "name": "tag",
+            "link": "tag",
+            "count": 1
+          }
+        ]
+      }
+    ]
+  }
+}

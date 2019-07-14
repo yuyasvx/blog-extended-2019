@@ -1,33 +1,49 @@
-// import * as either from 'fp-ts/lib/Either'
-// import { pipe } from 'fp-ts/lib/pipeable'
-// import BlogEntry from '../interface/BlogEntry'
-// import { blogConfig } from '../config/BlogConfig'
-// import { toBlogEntry } from '@/assets/service/JsonParser'
+import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither'
+import axios, { AxiosError } from 'axios'
+import { isBuilding, blogConfig } from '../config/BlogConfig'
+import NormalJson from '../interface/NormalJson'
+import { isAxiosError } from '../util/TypeGuards'
 
-// export const getWithPath = async (path: string, filename: string = 'index'): BlogEntry | BlogEntry[] => {
-//   // let preparedPath = path
-//   // if (preparedPath.startsWith('/') === false) {
-//   //   preparedPath = `/${preparedPath}`
-//   // }
-//   // if (preparedPath.endsWith('/') === false) {
-//   //   preparedPath = `${preparedPath}/`
-//   // }
-//   // let data
-//   // if (config.isBuilding) {
-//   //   preparedPath = decodeURIComponent(preparedPath)
-//   //   const a = pipe(
-//   //     parseToBlogEntry(await import(`${blogConfig.baseJsonPath}${preparedPath}${filename}.json`)),
-//   //     either.
-//   //   )
-//   //   console.log(a)
-//   // } else {
-//   //   // data = await axios
-//   //   //   .get(`${config.asyncDataLocation}${preparedPath}${filename}.json`)
-//   //   //   .then(res => res.data);
-//   //   preparedPath = decodeURIComponent(preparedPath)
-//   //   data = await import(`~/blog/public${preparedPath}${filename}.json`)
-//   // }
-//   // return {
-//   //   articleInfo: data.data
-//   // }
-// }
+/**
+ * パスを指定してJSONを取得する。nuxt generateが走っているときに呼ばれると、内部のJSONファイルを探し、
+ * それ以外のときはaxiosを使ってJSONファイルを取得する。
+ *
+ * @param path jsonのパス
+ * @param filename jsonのファイル名。指定なしの場合は "index" が指定される。
+ * @throws {AxiosError} json取得失敗時
+ */
+export const getWithPath = async (path: string, filename: string = 'index'): Promise<NormalJson> => {
+  let preparedPath = path
+  if (preparedPath.startsWith('/') === false) {
+    preparedPath = `/${preparedPath}`
+  }
+  if (preparedPath.endsWith('/') === false) {
+    preparedPath = `${preparedPath}/`
+  }
+  if (isBuilding) {
+    preparedPath = decodeURIComponent(preparedPath)
+    const data = await import(`${blogConfig.baseJsonPath}${preparedPath}${filename}.json`)
+    return data
+  } else {
+    const data = await axios.get(`${blogConfig.siteBaseUrl}${preparedPath}${filename}.json`)
+    return data.data
+  }
+}
+
+/**
+ * getWithPath の TaskEitherバージョン。
+ * @see getWithPath
+ * @param path jsonのパス
+ * @param filename jsonのファイル名。指定なしの場合は "index" が指定される。
+ */
+export const getWithPathE = (path: string, filename: string = 'index'): TaskEither<Error | AxiosError, NormalJson> => {
+  return tryCatch(
+    () => getWithPath(path, filename),
+    err => {
+      if (isAxiosError(err)) {
+        return err as AxiosError
+      }
+      return err as Error
+    }
+  )
+}
