@@ -23,5 +23,10 @@ module.exports = {
     '<rootDir>/plugins/**/*.(ts|js)',
     '<rootDir>/store/**/*.(ts|js)',
     '<rootDir>/assets/**/*.(ts|js)'
-  ]
+  ],
+  globals: {
+    'ts-jest': {
+      tsConfig: 'tsconfig.jest.json'
+    }
+  }
 }
