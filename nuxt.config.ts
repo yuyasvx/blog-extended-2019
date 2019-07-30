@@ -2,7 +2,6 @@ import NuxtConfiguration from '@nuxt/config'
 import sass from 'sass'
 import fibers from 'fibers'
 import pkg from './package.json'
-import publicJson from './blog/public/index.json'
 // import postsJson from './blog/public/post/index.json'
 import NormalJson from './assets/interface/NormalJson'
 
@@ -90,27 +89,32 @@ const config: NuxtConfiguration = {
      ** nuxt generate時、動的ルーティング時のコンテンツ生成対象
      ** @see https://ja.nuxtjs.org/api/configuration-generate#routes
      */
-    routes() {
-      const parsedResult: string[] = []
-      const publicData = publicJson as NormalJson
-      if (publicData.siteprops != null) {
-        publicData.siteprops.taxonomies
-          .filter(element => element.key === 'categories')[0]
-          .terms.forEach(term => {
-            parsedResult.push(`/categories/${term.link}/`)
-          })
+    async routes() {
+      try {
+        const publicJson: unknown = await import('./blog/public/index.json')
+        const parsedResult: string[] = []
+        const publicData = publicJson as NormalJson
+        if (publicData.siteprops != null) {
+          publicData.siteprops.taxonomies
+            .filter(element => element.key === 'categories')[0]
+            .terms.forEach(term => {
+              parsedResult.push(`/categories/${term.link}/`)
+            })
 
-        publicData.siteprops.taxonomies
-          .filter(element => element.key === 'tags')[0]
-          .terms.forEach(term => {
-            parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
-          })
+          publicData.siteprops.taxonomies
+            .filter(element => element.key === 'tags')[0]
+            .terms.forEach(term => {
+              parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
+            })
+        }
+        // TODO どうにかする
+        // postsJson.data.forEach(post => {
+        //   parsedResult.push(`${post.permalink}`)
+        // })
+        return parsedResult
+      } catch (err) {
+        return []
       }
-      // TODO どうにかする
-      // postsJson.data.forEach(post => {
-      //   parsedResult.push(`${post.permalink}`)
-      // })
-      return parsedResult
     }
   }
 }
