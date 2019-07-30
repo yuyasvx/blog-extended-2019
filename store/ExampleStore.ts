@@ -1,8 +1,7 @@
-import { Module, VuexModule, Mutation, getModule } from 'vuex-module-decorators'
-import store from '../assets/store'
+import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 
-@Module({ namespaced: true, name: 'ExampleStore', dynamic: true, store, stateFactory: true })
-export class ExampleStore extends VuexModule {
+@Module({ name: 'ExampleStore', stateFactory: true, namespaced: true })
+export default class ExampleStore extends VuexModule {
   exmapleData: string | undefined = 'example'
 
   @Mutation
@@ -10,6 +9,3 @@ export class ExampleStore extends VuexModule {
     this.exmapleData = exampleData
   }
 }
-
-const exampleStore = getModule(ExampleStore)
-export default exampleStore
