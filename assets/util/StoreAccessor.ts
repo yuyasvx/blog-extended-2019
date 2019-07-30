@@ -1,6 +1,6 @@
 import { Store } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
-import ExampleStore from '../../store/ExampleStore'
+import ExampleStore from '@/store/ExampleStore'
 
 // eslint-disable-next-line import/no-mutable-exports
 let exampleStore: ExampleStore

@@ -1,11 +1,11 @@
-import Day, { Dayjs } from 'dayjs'
+import Day from 'dayjs'
 import { CategoryInfo, TagInfo } from './EntryInfo'
 import BlogEntryNeighbor from './BlogEntryNeighbor'
 
 export default interface BlogEntry {
   title: string
   subtitle: string | null
-  date: Dayjs
+  date: Day.Dayjs
   categories: CategoryInfo[]
   tags: TagInfo[]
   summary: string | null

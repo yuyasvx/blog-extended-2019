@@ -13,7 +13,7 @@ import { Context } from '@nuxt/vue-app'
 import { task } from 'fp-ts/lib/Task'
 import { emptyValue } from '../../../../assets/interface/BlogEntry'
 import { isAxiosError } from '../../../../assets/util/TypeGuards'
-import exampleStore from '@/store/ExampleStore'
+import { exampleStore } from '@/assets/util/StoreAccessor'
 import { getWithPathE } from '@/assets/service/JsonLoader'
 import { toBlogEntryE, parseJsonObjectE } from '@/assets/service/JsonParser'
 
