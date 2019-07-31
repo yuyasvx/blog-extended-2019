@@ -1,13 +1,16 @@
+/* eslint-disable import/no-mutable-exports */
 import { Store } from 'vuex'
 import { getModule } from 'vuex-module-decorators'
 import ExampleStore from '@/store/ExampleStore'
+import SitePropsState from '@/store/SitePropsStore'
 
-// eslint-disable-next-line import/no-mutable-exports
 let exampleStore: ExampleStore
+let sitePropsState: SitePropsState
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function initialiseStores(store: Store<any>): void {
   exampleStore = getModule(ExampleStore, store)
+  sitePropsState = getModule(SitePropsState, store)
 }
 
-export { initialiseStores, exampleStore }
+export { initialiseStores, exampleStore, sitePropsState }

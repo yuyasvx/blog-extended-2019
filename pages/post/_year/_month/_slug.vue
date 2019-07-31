@@ -1,5 +1,6 @@
 <template>
   <div>
+    <top-header :blog-entry="blogEntry" />
     Single Article View
   </div>
 </template>
@@ -16,8 +17,11 @@ import { isAxiosError } from '../../../../assets/util/TypeGuards'
 import { exampleStore } from '@/assets/util/StoreAccessor'
 import { getWithPathE } from '@/assets/service/JsonLoader'
 import { toBlogEntryE, parseJsonObjectE } from '@/assets/service/JsonParser'
+import TopHeader from '@/components/single-article-view/TopHeader.vue'
 
-@Component
+@Component({
+  components: { TopHeader }
+})
 export default class SingleArticleView extends Vue {
   get exampleState() {
     return exampleStore.exmapleData
