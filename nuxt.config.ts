@@ -1,6 +1,8 @@
 import NuxtConfiguration from '@nuxt/config'
 import sass from 'sass'
 import fibers from 'fibers'
+import { pipe } from 'fp-ts/lib/pipeable'
+import * as te from 'fp-ts/lib/TaskEither'
 import pkg from './package.json'
 // import postsJson from './blog/public/post/index.json'
 import NormalJson from './assets/interface/NormalJson'
@@ -34,7 +36,7 @@ const config: NuxtConfiguration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/function-api.js'],
 
   /*
    ** Nuxt.js modules
@@ -90,31 +92,34 @@ const config: NuxtConfiguration = {
      ** @see https://ja.nuxtjs.org/api/configuration-generate#routes
      */
     async routes() {
-      try {
-        const publicJson: unknown = await import('./blog/public/index.json')
-        const parsedResult: string[] = []
-        const publicData = publicJson as NormalJson
-        if (publicData.siteprops != null) {
-          publicData.siteprops.taxonomies
-            .filter(element => element.key === 'categories')[0]
-            .terms.forEach(term => {
-              parsedResult.push(`/categories/${term.link}/`)
-            })
+      const parsedResult: string[] = []
+      await pipe(
+        te.tryCatch(
+          async () => {
+            const publicJson: unknown = await import('./blog/public/index.json')
+            return publicJson as NormalJson
+          },
+          err => err as Error
+        ),
+        te.map(publicData => {
+          if (publicData.siteprops != null) {
+            publicData.siteprops.taxonomies
+              .filter(element => element.key === 'categories')[0]
+              .terms.forEach(term => {
+                parsedResult.push(`/categories/${term.link}/`)
+              })
 
-          publicData.siteprops.taxonomies
-            .filter(element => element.key === 'tags')[0]
-            .terms.forEach(term => {
-              parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
-            })
-        }
-        // TODO どうにかする
-        // postsJson.data.forEach(post => {
-        //   parsedResult.push(`${post.permalink}`)
-        // })
-        return parsedResult
-      } catch (err) {
-        return []
-      }
+            publicData.siteprops.taxonomies
+              .filter(element => element.key === 'tags')[0]
+              .terms.forEach(term => {
+                parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
+              })
+          }
+          return publicData
+        })
+      )()
+
+      return parsedResult
     }
   }
 }
