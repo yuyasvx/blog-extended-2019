@@ -6,6 +6,7 @@ export default interface BlogEntry {
   title: string
   subtitle: string | null
   date: Day.Dayjs
+  formatterDate?: string
   categories: CategoryInfo[]
   tags: TagInfo[]
   summary: string | null

@@ -4,7 +4,6 @@ import * as tEither from 'fp-ts/lib/TaskEither'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { task } from 'fp-ts/lib/Task'
 import { getWithPath, getWithPathE } from '@/assets/service/JsonLoader'
-import config from '@/assets/config/BlogConfig'
 
 const testJson = {
   data: [
