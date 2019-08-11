@@ -1,0 +1,5 @@
+$color-map: (
+  black: #0f0f0f
+);
+
+$color-default: map-get($color-map, black);

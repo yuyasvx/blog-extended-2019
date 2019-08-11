@@ -31,7 +31,7 @@ const config: NuxtConfiguration = {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['@/assets/style/global.scss'],
 
   /*
    ** Plugins to load before mounting the App
@@ -75,6 +75,11 @@ const config: NuxtConfiguration = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
+        if (config.resolve && config.resolve.alias) {
+          config.resolve.alias.vue = 'vue/dist/vue.common'
+        } else {
+          config.resolve = { alias: { vue: 'vue/dist/vue.common' } }
+        }
       }
     },
     // use dart-sass instead of node-sass

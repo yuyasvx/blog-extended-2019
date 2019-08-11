@@ -1,0 +1,26 @@
+$font-size-normal: 15px;
+$font-size-small: 12px;
+
+$default-set: (
+  font-size: 15px,
+  font-family: (
+    'Inter',
+    YakuHanJP,
+    'Hiragino Sans',
+    'ヒラギノ角ゴシック',
+    Meiryo,
+    'メイリオ',
+    sans-serif
+  ),
+  font-feature-settings: (
+    'cv02',
+    'cv05',
+    'cv10'
+  )
+);
+
+@mixin default-font-settings {
+  font-size: map-get($default-set, font-size);
+  font-family: map-get($default-set, font-family);
+  font-feature-settings: map-get($default-set, font-feature-settings);
+}
