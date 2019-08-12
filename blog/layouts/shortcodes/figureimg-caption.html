@@ -1,0 +1,4 @@
+<figure{{ if .Get "size" }} class="size-{{ .Get "size" }}"{{ end }}  v-lazy-container="{ selector: 'img' }">
+  <img data-src="{{ "/images/" | relURL }}{{ dateFormat "2006-01" .Page.Date }}-{{ .Page.Slug }}/{{ .Get "src" }}" alt="{{ .Get "alt" }}" />
+  <figcaption>{{ .Inner }}</figcaption>
+</figure>

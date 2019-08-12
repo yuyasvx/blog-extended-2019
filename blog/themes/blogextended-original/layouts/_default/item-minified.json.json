@@ -1,0 +1,4 @@
+{
+  "jsonlink": "{{ .Permalink }}",
+  "permalink": {{ replace .Permalink "index.json" "" | relURL | jsonify }}
+}
