@@ -47,7 +47,7 @@ const config: NuxtConfiguration = {
     '@nuxtjs/pwa',
     '@nuxtjs/proxy'
   ],
-  proxy: ['http://localhost:1313/**/*.json', 'http://localhost:1313/*.json'],
+  proxy: ['http://localhost:1313/**/*.json', 'http://localhost:1313/*.json', 'http://localhost:1313/images/**/*.*'],
   /*
    ** Axios module configuration
    */

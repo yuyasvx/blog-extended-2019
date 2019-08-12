@@ -1,31 +1,37 @@
 <template>
   <div>
     <top-header :blog-entry="blogEntry" />
-    Single Article View
+    <article-content :blog-entry="blogEntry" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
+import { Context } from '@nuxt/vue-app'
 import { MetaInfo } from 'vue-meta'
+
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as tEither from 'fp-ts/lib/TaskEither'
-import { Context } from '@nuxt/vue-app'
+import * as o from 'fp-ts/lib/Option'
 import { task } from 'fp-ts/lib/Task'
-import { emptyValue } from '../../../../assets/interface/BlogEntry'
-import { isAxiosError } from '../../../../assets/util/TypeGuards'
-import { exampleStore } from '@/assets/util/StoreAccessor'
+
+import BlogEntry, { emptyValue } from '@/assets/interface/BlogEntry'
+import { isAxiosError } from '@/assets/util/TypeGuards'
 import { getWithPathE } from '@/assets/service/JsonLoader'
 import { toBlogEntryE, parseJsonObjectE } from '@/assets/service/JsonParser'
+import { extractContent, escapeMustache } from '@/assets/util/EntryProcessor'
+
 import TopHeader from '@/components/single-article-view/TopHeader.vue'
+import ArticleContent from '@/components/single-article-view/ArticleContent.vue'
 
 @Component({
-  components: { TopHeader }
+  components: {
+    TopHeader,
+    ArticleContent
+  }
 })
 export default class SingleArticleView extends Vue {
-  get exampleState() {
-    return exampleStore.exmapleData
-  }
+  blogEntry!: BlogEntry
 
   head(): MetaInfo {
     return {
@@ -48,7 +54,12 @@ export default class SingleArticleView extends Vue {
         throw err
       })
     )()
-
+    blogEntry.content = pipe(
+      o.fromNullable(blogEntry.content),
+      o.map(content => extractContent(blogEntry.summary, content)),
+      o.map(content => escapeMustache(content)),
+      o.getOrElse(() => blogEntry.content)
+    )
     return {
       blogEntry
     }
@@ -57,3 +68,8 @@ export default class SingleArticleView extends Vue {
 </script>
 
 <style lang="scss" scoped></style>
+
+<style>
+@import url('https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Serif+JP:400,500,600&amp;subset=japanese,latin-ext');
+@import url('https://cdn.jsdelivr.net/npm/yakuhanjp@3.1.0/dist/css/yakuhanmp.min.css');
+</style>

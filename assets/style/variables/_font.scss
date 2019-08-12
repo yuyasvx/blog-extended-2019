@@ -19,6 +19,9 @@ $default-set: (
   )
 );
 
+$font-aricle-text: YakuHanMP, 'Noto Serif JP', 'Source Han Serif', sans-serif;
+$font-code: 'Fira Code', 'Fira Mono', 'SF Mono', 'Menlo', 'Source Han Sans', monospace;
+
 @mixin default-font-settings {
   font-size: map-get($default-set, font-size);
   font-family: map-get($default-set, font-family);

@@ -11,3 +11,7 @@ body {
   @include default-font-settings;
   color: $color-default;
 }
+
+* {
+  box-sizing: border-box;
+}
