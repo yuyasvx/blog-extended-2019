@@ -41,6 +41,7 @@ export const toBlogEntry = (item: any): BlogEntry => {
   entry.jsonlink = unsafeItem.jsonlink !== undefined ? unsafeItem.jsonlink : entry.jsonlink
   entry.hasCoverImage = unsafeItem.hasCoverImage !== undefined ? unsafeItem.hasCoverImage : entry.hasCoverImage
   entry.neighbor = unsafeItem.neighbor !== undefined ? unsafeItem.neighbor : entry.neighbor
+  entry.color = unsafeItem.color !== undefined ? unsafeItem.color : entry.color
 
   if (!entry.date.isValid()) {
     throw new Error(`invalid date: ${item.date}`)

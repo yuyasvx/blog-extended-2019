@@ -15,6 +15,7 @@ export default interface BlogEntry {
   jsonlink: string
   hasCoverImage: boolean
   neighbor: BlogEntryNeighbor
+  color: string | null
 }
 
 export const emptyValue = (): BlogEntry => ({
@@ -31,5 +32,6 @@ export const emptyValue = (): BlogEntry => ({
   neighbor: {
     newer: null,
     older: null
-  }
+  },
+  color: null
 })

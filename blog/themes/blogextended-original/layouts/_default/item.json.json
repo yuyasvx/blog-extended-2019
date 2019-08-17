@@ -12,5 +12,6 @@
   ],
   "jsonlink": "{{ .Permalink }}",
   "permalink": {{ replace .Permalink "index.json" "" | relURL | jsonify }},
-  "hasCoverImage": {{ if .Params.hasCoverImage }}{{ .Params.hasCoverImage }}{{ else }}false{{ end }}
+  "hasCoverImage": {{ if .Params.hasCoverImage }}{{ .Params.hasCoverImage }}{{ else }}false{{ end }},
+  "color": {{ if .Params.color }}"{{ .Params.color }}"{{ else }}null{{ end }}
 }

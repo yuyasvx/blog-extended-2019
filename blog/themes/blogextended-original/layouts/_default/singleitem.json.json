@@ -22,5 +22,6 @@
     "newer": {{ if .NextInSection }} {
       "title": {{ .NextInSection.LinkTitle | jsonify }},
       "permalink": {{ replace .NextInSection.Permalink "index.json" "" | relURL | jsonify }}
-    } {{ else }} null{{ end }} }
+    } {{ else }} null{{ end }} },
+  "color": {{ if .Params.color }}"{{ .Params.color }}"{{ else }}null{{ end }}
 }

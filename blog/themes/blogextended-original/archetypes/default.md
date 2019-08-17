@@ -11,6 +11,7 @@ seriesSequenceNumber = 1
 slug = "{{ .Name }}"
 hasCoverImage = false
 draft = false
+color = "#"
 +++
 
 {{% section-intro %}}
