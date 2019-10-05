@@ -16,7 +16,7 @@ export const extractContent = (summary?: string | null, content?: string | null)
 }
 
 /**
- * マスタッシュをエスケープしてエラー回避
+ * マスタッシュにゼロ幅スペースをねじ込んでエラー回避。
  * @param text
  */
 export const escapeMustache = (text: string): string => {

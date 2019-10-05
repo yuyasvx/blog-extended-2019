@@ -1,32 +1,37 @@
 <template>
-  <div class="article-content">
-    <component :is="{ template: summary }" />
-    <component :is="{ template: content }" />
+  <div class="single-article">
+    <single-article-summary :content="props.blogEntry.summary" />
+    <single-article-content :content="props.blogEntry.content" />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, createComponent, PropType } from 'vue-function-api'
+import { createComponent, PropType } from 'vue-function-api'
 import BlogEntry from '@/assets/interface/BlogEntry'
+import SingleArticleSummary from '@/components/single-article-view/SingleArticleSummary.vue'
+import SingleArticleContent from '@/components/single-article-view/SingleArticleContent.vue'
 
 interface ArticleContentProps {
   blogEntry: BlogEntry
 }
 
 export default createComponent<ArticleContentProps>({
+  components: {
+    SingleArticleSummary,
+    SingleArticleContent
+  },
   props: (['blogEntry'] as unknown) as PropType<ArticleContentProps>,
   setup(props) {
     // const exampleState = computed(() => exampleStore.exmapleData)
-    const summary = computed(() => {
-      return `<section class="summary">${props.blogEntry.summary}</section>`
-    })
-    const content = computed(() => {
-      return `<section class="content">${props.blogEntry.content}</section>`
-    })
+    // const summary = computed(() => {
+    //   return `<section class="summary">${props.blogEntry.summary}</section>`
+    // })
+    // const content = computed(() => {
+    //   return `<section class="content">${props.blogEntry.content}</section>`
+    // })
 
     return {
-      summary,
-      content
+      props
     }
   }
 })
@@ -34,14 +39,25 @@ export default createComponent<ArticleContentProps>({
 
 <style lang="scss" scoped>
 @import '../../assets/style/variables/layout';
+@import '../../assets/style/variables/media-query';
 
-.article-content {
+.single-article {
   width: 1200px;
   margin: ($length-unit * 2) auto 0 auto;
+
+  @include mq-range(narrowest, narrower) {
+    width: 100%;
+    margin: ($length-unit) auto 0 auto;
+  }
 
   > .summary {
     width: 900px;
     margin: 0 auto 0 auto;
+
+    @include mq-range(narrowest, narrower) {
+      width: 100%;
+      margin: 0;
+    }
 
     &::after {
       content: '';
@@ -50,6 +66,11 @@ export default createComponent<ArticleContentProps>({
       height: 2px;
       background: #0f0f0f;
       margin: ($length-unit * 2) 0 ($length-unit * 2) 0;
+
+      @include mq-range(narrowest, narrower) {
+        width: ($length-unit);
+        margin: ($length-unit) 0 ($length-unit) 0;
+      }
     }
   }
 }
@@ -58,8 +79,9 @@ export default createComponent<ArticleContentProps>({
 <style lang="scss">
 @import '../../assets/style/variables/layout';
 @import '../../assets/style/variables/font';
+@import '../../assets/style/variables/media-query';
 
-.article-content > .summary {
+.single-article > .summary {
   p {
     line-height: 1.9;
     font-weight: 500;
@@ -69,10 +91,25 @@ export default createComponent<ArticleContentProps>({
   }
 }
 
-.article-content > .content {
+.single-article > .content {
   > * {
     width: 900px;
     margin: 0 auto $length-unit auto;
+
+    @include mq-range(narrowest, narrower) {
+      width: 100%;
+      margin: 0 auto $length-unit auto;
+    }
+
+    @include mq-range(zero, zero) {
+      padding-left: $length-unit / 4;
+      padding-right: $length-unit / 4;
+    }
+
+    @include mq-range(narrowest, narrower) {
+      padding-left: $length-unit / 2;
+      padding-right: $length-unit / 2;
+    }
   }
 
   > p {
@@ -92,6 +129,10 @@ export default createComponent<ArticleContentProps>({
       position: absolute;
       top: 0;
       left: 0;
+
+      @include mq-range(narrowest, narrower) {
+        width: 20px;
+      }
     }
     line-height: 1.2;
     font-size: 30px;
@@ -100,6 +141,13 @@ export default createComponent<ArticleContentProps>({
     margin-bottom: ($length-unit);
     position: relative;
     padding: 0 0 0 ($length-unit * 2);
+
+    @include mq-range(narrowest, narrower) {
+      font-size: 25px;
+      margin-top: ($length-unit);
+      margin-bottom: ($length-unit);
+      padding: 0 0 0 ($length-unit);
+    }
   }
 
   h3 {

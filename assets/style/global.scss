@@ -4,14 +4,23 @@
 @import './variables/color';
 @import './variables/font';
 @import './variables/layout';
+@import './variables/media-query';
 
 body {
   margin: 0;
   padding: 0;
   @include default-font-settings;
   color: $color-default;
+
+  @include mq-range(narrowest, narrower) {
+    font-size: 13px;
+  }
 }
 
 * {
   box-sizing: border-box;
+}
+
+code {
+  white-space: pre-wrap;
 }

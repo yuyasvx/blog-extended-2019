@@ -6,6 +6,7 @@ import * as te from 'fp-ts/lib/TaskEither'
 import pkg from './package.json'
 // import postsJson from './blog/public/post/index.json'
 import NormalJson from './assets/interface/NormalJson'
+import MediaQueryConfig from './assets/config/MediaQueryConfig'
 
 const config: NuxtConfiguration = {
   mode: 'universal',
@@ -45,7 +46,8 @@ const config: NuxtConfiguration = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
+    'nuxt-mq'
   ],
   proxy: ['http://localhost:1313/**/*.json', 'http://localhost:1313/*.json', 'http://localhost:1313/images/**/*.*'],
   /*
@@ -126,7 +128,8 @@ const config: NuxtConfiguration = {
 
       return parsedResult
     }
-  }
+  },
+  mq: MediaQueryConfig
 }
 
 export default config

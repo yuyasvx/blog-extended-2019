@@ -6,7 +6,7 @@
         Boilerplate
       </h1>
       <h2 class="subtitle">
-        My fantabulous Nuxt.js project
+        My fantabulous Nuxt.js project. 1234567890. Little Graphite abstract
       </h2>
       <div class="links">
         <nuxt-link to="/about" exact class="button--green">About</nuxt-link>
@@ -40,8 +40,6 @@ export default class PagesIndex extends Vue {}
 }
 
 .title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
-    Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;

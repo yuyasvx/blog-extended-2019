@@ -1,7 +1,12 @@
 <template>
-  <div>
-    <top-header :blog-entry="blogEntry" />
-    <article-content :blog-entry="blogEntry" />
+  <div class="single-article-view">
+    <mq-layout mq="narrow+">
+      <top-header :blog-entry="blogEntry" />
+    </mq-layout>
+    <mq-layout :mq="['narrower', 'narrowest']">
+      <top-header-sp :blog-entry="blogEntry" />
+    </mq-layout>
+    <single-article :blog-entry="blogEntry" />
   </div>
 </template>
 
@@ -22,12 +27,14 @@ import { toBlogEntryE, parseJsonObjectE } from '@/assets/service/JsonParser'
 import { extractContent, escapeMustache } from '@/assets/util/EntryProcessor'
 
 import TopHeader from '@/components/single-article-view/TopHeader.vue'
-import ArticleContent from '@/components/single-article-view/ArticleContent.vue'
+import TopHeaderSp from '@/components/single-article-view/TopHeaderSp.vue'
+import SingleArticle from '@/components/single-article-view/SingleArticle.vue'
 
 @Component({
   components: {
     TopHeader,
-    ArticleContent
+    TopHeaderSp,
+    SingleArticle
   }
 })
 export default class SingleArticleView extends Vue {
@@ -68,8 +75,3 @@ export default class SingleArticleView extends Vue {
 </script>
 
 <style lang="scss" scoped></style>
-
-<style>
-@import url('https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Serif+JP:400,500,600&amp;subset=japanese,latin-ext');
-@import url('https://cdn.jsdelivr.net/npm/yakuhanjp@3.1.0/dist/css/yakuhanmp.min.css');
-</style>
