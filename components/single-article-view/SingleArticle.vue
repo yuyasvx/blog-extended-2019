@@ -1,40 +1,26 @@
 <template>
   <div class="single-article">
-    <single-article-summary :content="props.blogEntry.summary" />
-    <single-article-content :content="props.blogEntry.content" />
+    <single-article-summary :content="blogEntry.summary" />
+    <single-article-content :content="blogEntry.content" />
   </div>
 </template>
 
 <script lang="ts">
-import { createComponent, PropType } from 'vue-function-api'
+import { Component, Prop, Vue } from 'nuxt-property-decorator'
 import BlogEntry from '@/assets/interface/BlogEntry'
 import SingleArticleSummary from '@/components/single-article-view/SingleArticleSummary.vue'
 import SingleArticleContent from '@/components/single-article-view/SingleArticleContent.vue'
 
-interface ArticleContentProps {
-  blogEntry: BlogEntry
-}
-
-export default createComponent<ArticleContentProps>({
+@Component({
   components: {
     SingleArticleSummary,
     SingleArticleContent
-  },
-  props: (['blogEntry'] as unknown) as PropType<ArticleContentProps>,
-  setup(props) {
-    // const exampleState = computed(() => exampleStore.exmapleData)
-    // const summary = computed(() => {
-    //   return `<section class="summary">${props.blogEntry.summary}</section>`
-    // })
-    // const content = computed(() => {
-    //   return `<section class="content">${props.blogEntry.content}</section>`
-    // })
-
-    return {
-      props
-    }
   }
 })
+export default class SingleArticle extends Vue {
+  @Prop(Object)
+  readonly blogEntry!: BlogEntry
+}
 </script>
 
 <style lang="scss" scoped>
