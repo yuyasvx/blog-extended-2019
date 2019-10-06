@@ -1,0 +1,17 @@
+{
+  "title": {{ .Title | jsonify }},
+  "subtitle": {{ .Params.subtitle | jsonify }},
+  "date" : "{{ .Date }}",
+  "categories": [{{ range $index, $e := .Params.categories }}{{ if $index }}, {{ end }}
+    {"name": "{{ . }}", "link": "{{ . | urlize }}"} {{ end }}
+  ],
+  {{ if .Params.series }}"series": {{ .Params.series | jsonify }},{{ end }}
+  {{ if .Params.series }}"seriesSequenceNumber": {{ .Params.seriesSequenceNumber | jsonify }},{{ end }}
+  "tags" : [{{ range $index, $e := .Params.tags }}{{ if $index }}, {{ end }}
+    {"name": "{{ . }}", "link": "{{ . | urlize }}"} {{ end }}
+  ],
+  "jsonlink": "{{ .Permalink }}",
+  "permalink": {{ replace .Permalink "index.json" "" | relURL | jsonify }},
+  "hasCoverImage": {{ if .Params.hasCoverImage }}{{ .Params.hasCoverImage }}{{ else }}false{{ end }},
+  "color": {{ if .Params.color }}"{{ .Params.color }}"{{ else }}null{{ end }}
+}

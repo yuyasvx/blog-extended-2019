@@ -1,0 +1,34 @@
+$font-size-normal: 15px;
+$font-size-small: 12px;
+
+$default-set: (
+  font-size: 15px,
+  font-family: (
+    'Inter',
+    YakuHanJP,
+    'Hiragino Sans',
+    'ヒラギノ角ゴシック',
+    Meiryo,
+    'メイリオ',
+    sans-serif
+  ),
+  font-feature-settings: (
+    'cv01',
+    'cv02',
+    'cv03',
+    'cv04',
+    'cv08',
+    'cv09',
+    'cv10',
+    'cv11'
+  )
+);
+
+$font-aricle-text: YakuHanMP, 'Noto Serif JP', 'Source Han Serif', sans-serif;
+$font-code: 'Fira Code', 'Fira Mono', 'SF Mono', 'Menlo', 'Source Han Sans', monospace;
+
+@mixin default-font-settings {
+  font-size: map-get($default-set, font-size);
+  font-family: map-get($default-set, font-family);
+  font-feature-settings: map-get($default-set, font-feature-settings);
+}

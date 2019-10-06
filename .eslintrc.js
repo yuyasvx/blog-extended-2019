@@ -18,16 +18,20 @@ module.exports = {
     'plugin:prettier/recommended',
     'prettier/vue'
   ],
-  plugins: [
-    'prettier',
-    '@typescript-eslint'
-  ],
+  plugins: ['prettier', '@typescript-eslint'],
   // add your custom rules here
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     '@typescript-eslint/indent': 'off',
-    '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
+    '@typescript-eslint/explicit-function-return-type': [
+      'warn',
+      {
+        allowExpressions: true,
+        allowHigherOrderFunctions: true,
+        allowTypedFunctionExpressions: true
+      }
+    ],
     '@typescript-eslint/member-delimiter-style': [
       'warn',
       {

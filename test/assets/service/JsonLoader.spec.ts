@@ -1,10 +1,6 @@
 import axios from 'axios'
 import { mocked } from 'ts-jest/utils'
-import * as tEither from 'fp-ts/lib/TaskEither'
-import { pipe } from 'fp-ts/lib/pipeable'
-import { task } from 'fp-ts/lib/Task'
 import { getWithPath, getWithPathE } from '@/assets/service/JsonLoader'
-import config from '@/assets/config/BlogConfig'
 
 const testJson = {
   data: [
@@ -24,16 +20,16 @@ const testJson = {
   }
 }
 
-const configMock = {
-  __esModule: true,
-  isBuilding: true,
-  blogConfig: {
-    siteBaseUrl: '/site-base-url',
-    siteName: 'site name',
-    siteShortName: 'name',
-    baseJsonPath: './'
-  }
-}
+// const configMock = {
+//   __esModule: true,
+//   isBuilding: true,
+//   blogConfig: {
+//     siteBaseUrl: '/site-base-url',
+//     siteName: 'site name',
+//     siteShortName: 'name',
+//     baseJsonPath: './'
+//   }
+// }
 
 // ここでmockを設定すると、テストケースごとにmockの構成を変えることは出来ない
 jest.mock('axios')
@@ -84,36 +80,45 @@ describe('getWithPath Either', () => {
       })
     )
 
-    await pipe(
-      getWithPathE('test-string'),
-      tEither.fold(
-        err => {
-          throw err
-        },
-        json => {
-          expect(json).toBe(testJson)
-          return task.of(json)
-        }
-      )
-    )()
+    const result = await getWithPathE('test-string').run()
+    result.caseOf({
+      Left: err => {
+        throw err
+      },
+      Right: json => {
+        expect(json).toBe(testJson)
+        return json
+      }
+    })
 
     done()
   })
 
   it('nuxt generateの時以外はaxiosを使う Either: エラーハンドリング', async done => {
     mocked(axios.get).mockImplementationOnce(() => Promise.reject(new Error('test error')))
-    await pipe(
-      getWithPathE('test-string'),
-      tEither.fold(
-        err => {
-          expect(err.message).toBe('test error')
-          return task.of({})
-        },
-        () => {
-          throw new Error('test failed')
-        }
-      )
-    )()
+    // await pipe(
+    //   getWithPathE('test-string'),
+    //   tEither.fold(
+    //     err => {
+    //       expect(err.message).toBe('test error')
+    //       return task.of({})
+    //     },
+    //     () => {
+    //       throw new Error('test failed')
+    //     }
+    //   )
+    // )()
+
+    const result = await getWithPathE('test-string').run()
+    result.caseOf({
+      Left: err => {
+        expect(err.message).toBe('test error')
+        return err
+      },
+      Right: () => {
+        throw new Error('test failed')
+      }
+    })
 
     done()
   })

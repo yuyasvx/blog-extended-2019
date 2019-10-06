@@ -1,11 +1,12 @@
-import Day, { Dayjs } from 'dayjs'
+import Day from 'dayjs'
 import { CategoryInfo, TagInfo } from './EntryInfo'
 import BlogEntryNeighbor from './BlogEntryNeighbor'
 
 export default interface BlogEntry {
   title: string
   subtitle: string | null
-  date: Dayjs
+  date: Day.Dayjs
+  formatterDate?: string
   categories: CategoryInfo[]
   tags: TagInfo[]
   summary: string | null
@@ -14,6 +15,7 @@ export default interface BlogEntry {
   jsonlink: string
   hasCoverImage: boolean
   neighbor: BlogEntryNeighbor
+  color: string | null
 }
 
 export const emptyValue = (): BlogEntry => ({
@@ -30,5 +32,6 @@ export const emptyValue = (): BlogEntry => ({
   neighbor: {
     newer: null,
     older: null
-  }
+  },
+  color: null
 })

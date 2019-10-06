@@ -1,0 +1,18 @@
+{
+  "data": [
+    {{ range $index, $e := .Data.Pages }}
+    {{ if $index }}, {{ end }}{{ .Render "item" }}
+    {{ end }}
+  ],
+  "siteprops": {
+    "taxonomies": [{{- range $taxonomyName, $taxonomy := .Site.Taxonomies }}{{ if ne $taxonomyName "categories" }},{{ end }}{{- $taxonomyUrl := print ("/" | relLangURL) ($taxonomyName | urlize) }}
+      {
+        "key": "{{ $taxonomyName }}",{{ $.Scratch.Set "counter" 0 }}
+        "terms": [{{- range $termName, $entries := $taxonomy }}
+          {{ if $.Scratch.Get "counter" }}, {{ end }}{"name": {{ $termName | jsonify }}, "link": "{{ $termName | urlize }}", "count": {{ $entries.Count }} } {{ $.Scratch.Set "counter" (add ($.Scratch.Get "counter") 1) }}
+        {{- end }}]
+      }
+    {{- end }}
+    ]
+  }
+}

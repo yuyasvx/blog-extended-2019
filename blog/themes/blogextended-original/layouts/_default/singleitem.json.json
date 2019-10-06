@@ -1,0 +1,27 @@
+{
+  "title": {{ .Title | jsonify }},
+  "subtitle": {{ .Params.subtitle | jsonify }},
+  "date": "{{ .Date }}",
+  "categories": [{{ range $index, $e := .Params.categories }}{{ if $index }}, {{ end }}
+    {"name": "{{ . }}", "link": "{{ . | urlize }}"} {{ end }}
+  ],
+  {{ if .Params.series }}"series": {{ .Params.series | jsonify }},{{ end }}
+  "tags" : [{{ range $index, $e := .Params.tags }}{{ if $index }}, {{ end }}
+    {"name": "{{ . }}", "link": "{{ . | urlize }}"} {{ end }}
+  ],
+  "summary": {{ .Summary | jsonify }},
+  "content": {{ .Content | jsonify }},
+  "permalink": {{ replace .Permalink "index.json" "" | relURL | jsonify }},
+  "jsonlink": "{{ .Permalink }}",
+  "hasCoverImage": {{ if .Params.hasCoverImage }}{{ .Params.hasCoverImage }}{{ else }}false{{ end }},
+  "neighbor": {
+    "older":{{ if .PrevInSection }} {
+      "title": {{ .PrevInSection.LinkTitle | jsonify }},
+      "permalink": {{ replace .PrevInSection.Permalink "index.json" "" | relURL | jsonify }}
+    } {{ else }} null{{ end }},
+    "newer": {{ if .NextInSection }} {
+      "title": {{ .NextInSection.LinkTitle | jsonify }},
+      "permalink": {{ replace .NextInSection.Permalink "index.json" "" | relURL | jsonify }}
+    } {{ else }} null{{ end }} },
+  "color": {{ if .Params.color }}"{{ .Params.color }}"{{ else }}null{{ end }}
+}

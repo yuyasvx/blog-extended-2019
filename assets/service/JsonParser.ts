@@ -32,6 +32,7 @@ export const toBlogEntry = (item: any): BlogEntry => {
   entry.title = unsafeItem.title !== undefined ? unsafeItem.title : entry.title
   entry.subtitle = unsafeItem.subtitle !== undefined ? unsafeItem.subtitle : entry.subtitle
   entry.date = Day(itemDate.replace('JST', '').trim(), 'YYYY-MM-DD HH:mm:ss ZZ')
+  entry.formatterDate = entry.date.format('YYYY年MM月DD日')
   entry.categories = unsafeItem.categories !== undefined ? unsafeItem.categories : entry.categories
   entry.tags = unsafeItem.tags !== undefined ? unsafeItem.tags : entry.tags
   entry.summary = unsafeItem.summary !== undefined ? unsafeItem.summary : entry.summary
@@ -40,6 +41,7 @@ export const toBlogEntry = (item: any): BlogEntry => {
   entry.jsonlink = unsafeItem.jsonlink !== undefined ? unsafeItem.jsonlink : entry.jsonlink
   entry.hasCoverImage = unsafeItem.hasCoverImage !== undefined ? unsafeItem.hasCoverImage : entry.hasCoverImage
   entry.neighbor = unsafeItem.neighbor !== undefined ? unsafeItem.neighbor : entry.neighbor
+  entry.color = unsafeItem.color !== undefined ? unsafeItem.color : entry.color
 
   if (!entry.date.isValid()) {
     throw new Error(`invalid date: ${item.date}`)

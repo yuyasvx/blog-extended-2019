@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import exampleStore from '@/store/ExampleStore'
+import { exampleStore } from '@/assets/util/StoreAccessor'
 
 @Component
 export default class AboutIndex extends Vue {

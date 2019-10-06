@@ -1,4 +1,13 @@
 declare module '*.vue' {
-  import Vue from 'vue'
-  export default Vue
+  import VueJS from 'vue'
+  interface Vue {
+    $mq: string
+  }
+  export default VueJS
+}
+
+declare module 'vue/types/vue' {
+  interface Vue {
+    $mq: string
+  }
 }

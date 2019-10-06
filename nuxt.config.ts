@@ -1,10 +1,12 @@
 import NuxtConfiguration from '@nuxt/config'
 import sass from 'sass'
 import fibers from 'fibers'
+import { pipe } from 'fp-ts/lib/pipeable'
+import * as te from 'fp-ts/lib/TaskEither'
 import pkg from './package.json'
-import publicJson from './blog/public/index.json'
 // import postsJson from './blog/public/post/index.json'
 import NormalJson from './assets/interface/NormalJson'
+import MediaQueryConfig from './assets/config/MediaQueryConfig'
 
 const config: NuxtConfiguration = {
   mode: 'universal',
@@ -30,12 +32,12 @@ const config: NuxtConfiguration = {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['@/assets/style/global.scss'],
 
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/function-api.js', '~/plugins/lazyload.js'],
 
   /*
    ** Nuxt.js modules
@@ -44,9 +46,10 @@ const config: NuxtConfiguration = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    '@nuxtjs/proxy'
+    '@nuxtjs/proxy',
+    'nuxt-mq'
   ],
-  proxy: ['http://localhost:1313/**/*.json', 'http://localhost:1313/*.json'],
+  proxy: ['http://localhost:1313/**/*.json', 'http://localhost:1313/*.json', 'http://localhost:1313/images/**/*.*'],
   /*
    ** Axios module configuration
    */
@@ -74,6 +77,11 @@ const config: NuxtConfiguration = {
           loader: 'eslint-loader',
           exclude: /(node_modules)/
         })
+        if (config.resolve && config.resolve.alias) {
+          config.resolve.alias.vue = 'vue/dist/vue.common'
+        } else {
+          config.resolve = { alias: { vue: 'vue/dist/vue.common' } }
+        }
       }
     },
     // use dart-sass instead of node-sass
@@ -90,29 +98,38 @@ const config: NuxtConfiguration = {
      ** nuxt generate時、動的ルーティング時のコンテンツ生成対象
      ** @see https://ja.nuxtjs.org/api/configuration-generate#routes
      */
-    routes() {
+    async routes() {
       const parsedResult: string[] = []
-      const publicData = publicJson as NormalJson
-      if (publicData.siteprops != null) {
-        publicData.siteprops.taxonomies
-          .filter(element => element.key === 'categories')[0]
-          .terms.forEach(term => {
-            parsedResult.push(`/categories/${term.link}/`)
-          })
+      await pipe(
+        te.tryCatch(
+          async () => {
+            const publicJson: unknown = await import('./blog/public/index.json')
+            return publicJson as NormalJson
+          },
+          err => err as Error
+        ),
+        te.map(publicData => {
+          if (publicData.siteprops != null) {
+            publicData.siteprops.taxonomies
+              .filter(element => element.key === 'categories')[0]
+              .terms.forEach(term => {
+                parsedResult.push(`/categories/${term.link}/`)
+              })
 
-        publicData.siteprops.taxonomies
-          .filter(element => element.key === 'tags')[0]
-          .terms.forEach(term => {
-            parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
-          })
-      }
-      // TODO どうにかする
-      // postsJson.data.forEach(post => {
-      //   parsedResult.push(`${post.permalink}`)
-      // })
+            publicData.siteprops.taxonomies
+              .filter(element => element.key === 'tags')[0]
+              .terms.forEach(term => {
+                parsedResult.push(`/tags/${decodeURIComponent(term.link)}/`)
+              })
+          }
+          return publicData
+        })
+      )()
+
       return parsedResult
     }
-  }
+  },
+  mq: MediaQueryConfig
 }
 
 export default config

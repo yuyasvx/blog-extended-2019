@@ -1,0 +1,38 @@
+$breakpoints: (
+  'narrowest': 'screen and (min-width: 320px) and (max-width: 549px)',
+  'narrower': 'screen and (min-width: 550px) and (max-width: 699px)',
+  'narrow': 'screen and (min-width: 700px) and (max-width: 999px)',
+  'wide': 'screen and (min-width: 1000px) and (max-width: 1279px)',
+  'wider': 'screen and (min-width: 1280px) and (max-width: 1439px)',
+  'widest': 'screen and (min-width: 1440px)'
+) !default;
+
+$part-min: (
+  'narrowest': '320px',
+  'narrower': '550px',
+  'narrow': '700px',
+  'wide': '1000px',
+  'wider': '1280px',
+  'widest': '1440px'
+) !default;
+
+$part-max: (
+  'narrowest': '549px',
+  'narrower': '699px',
+  'narrow': '999px',
+  'wide': '1279px',
+  'wider': '1439px',
+  'widest': '1440px'
+) !default;
+
+@mixin mq($breakpoint: wider) {
+  @media #{map-get($breakpoints, $breakpoint)} {
+    @content;
+  }
+}
+
+@mixin mq-range($min: wider, $max: wider) {
+  @media screen and (min-width: #{map-get($part-min, $min)}) and (max-width: #{map-get($part-max, $max)}) {
+    @content;
+  }
+}
