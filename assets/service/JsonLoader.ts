@@ -1,8 +1,9 @@
-import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither'
+import { EitherAsync } from 'purify-ts/EitherAsync'
 import axios, { AxiosError } from 'axios'
 import { isBuilding, blogConfig } from '../config/BlogConfig'
 import NormalJson from '../interface/NormalJson'
 import { isAxiosError } from '../util/TypeGuards'
+import AsyncFetchError from '@/assets/error/AsyncFetchError'
 
 /**
  * パスを指定してJSONを取得する。nuxt generateが走っているときに呼ばれると、内部のJSONファイルを探し、
@@ -36,14 +37,29 @@ export const getWithPath = async (path: string, filename: string = 'index'): Pro
  * @param path jsonのパス
  * @param filename jsonのファイル名。指定なしの場合は "index" が指定される。
  */
-export const getWithPathE = (path: string, filename: string = 'index'): TaskEither<Error | AxiosError, NormalJson> => {
-  return tryCatch(
-    () => getWithPath(path, filename),
-    err => {
+// export const getWithPathE = (path: string, filename: string = 'index'): TaskEither<Error | AxiosError, NormalJson> => {
+//   return tryCatch(
+//     () => getWithPath(path, filename),
+//     err => {
+//       if (isAxiosError(err)) {
+//         return err as AxiosError
+//       }
+//       return err as Error
+//     }
+//   )
+// }
+
+export const getWithPathE = (
+  path: string,
+  filename: string = 'index'
+): EitherAsync<AxiosError | AsyncFetchError, NormalJson> =>
+  EitherAsync(async () => {
+    try {
+      return await getWithPath(path, filename)
+    } catch (err) {
       if (isAxiosError(err)) {
-        return err as AxiosError
+        throw err
       }
-      return err as Error
+      throw new AsyncFetchError(err)
     }
-  )
-}
+  })

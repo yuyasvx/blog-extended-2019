@@ -15,15 +15,16 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import { Context } from '@nuxt/vue-app'
 import { MetaInfo } from 'vue-meta'
 
-import { pipe } from 'fp-ts/lib/pipeable'
-import * as tEither from 'fp-ts/lib/TaskEither'
-import * as o from 'fp-ts/lib/Option'
-import { task } from 'fp-ts/lib/Task'
+// import { pipe } from 'fp-ts/lib/pipeable'
+// import * as tEither from 'fp-ts/lib/TaskEither'
+// import * as o from 'fp-ts/lib/Option'
+// import { task } from 'fp-ts/lib/Task'
 
+import { Maybe } from 'purify-ts/Maybe'
 import BlogEntry, { emptyValue } from '@/assets/interface/BlogEntry'
 import { isAxiosError } from '@/assets/util/TypeGuards'
 import { getWithPathE } from '@/assets/service/JsonLoader'
-import { toBlogEntryE, parseJsonObjectE } from '@/assets/service/JsonParser'
+import { parseJsonObject, toBlogEntry } from '@/assets/service/JsonParser'
 import { extractContent, escapeMustache } from '@/assets/util/EntryProcessor'
 
 import TopHeader from '@/components/single-article-view/TopHeader.vue'
@@ -47,26 +48,27 @@ export default class SingleArticleView extends Vue {
   }
 
   async asyncData({ params, error }: Context) {
-    const blogEntry = await pipe(
-      getWithPathE(`/post/${params.year}/${params.month}/${params.slug}`),
-      tEither.chain(json => tEither.fromEither(parseJsonObjectE(json))),
-      tEither.chain(entries => tEither.fromEither(toBlogEntryE(entries[0]))),
-      tEither.getOrElse(err => {
-        if (isAxiosError(err)) {
-          const statusCode = err.response ? err.response.status : 500
-          const message = err.response ? err.response.statusText : 'Internal Error'
-          error({ statusCode, message })
-          return task.of(emptyValue())
-        }
-        throw err
+    const blogEntryOrError = await getWithPathE(`/post/${params.year}/${params.month}/${params.slug}`).run()
+    const blogEntry = blogEntryOrError
+      .map(json => parseJsonObject(json))
+      .map(entries => toBlogEntry(entries[0]))
+      .caseOf({
+        Left: err => {
+          if (isAxiosError(err)) {
+            const statusCode = err.response ? err.response.status : 500
+            const message = err.response ? err.response.statusText : 'Internal Error'
+            error({ statusCode, message })
+            return emptyValue()
+          }
+          throw err
+        },
+        Right: r => r
       })
-    )()
-    blogEntry.content = pipe(
-      o.fromNullable(blogEntry.content),
-      o.map(content => extractContent(blogEntry.summary, content)),
-      o.map(content => escapeMustache(content)),
-      o.getOrElse(() => blogEntry.content)
-    )
+    blogEntry.content = Maybe.fromNullable(blogEntry.content)
+      .map(content => extractContent(blogEntry.summary, content))
+      .map(content => escapeMustache(content))
+      .orDefault('')
+
     return {
       blogEntry
     }
